@@ -14,11 +14,11 @@ STL内存由空间适配器(alloc)进行控制管理。
 
 对于一个C++的伪类Foo：
 
-'''C
+```C++
 class Foo {...}
 Foo* pf = new Foo;
 delete pf;
-'''
+```
 
 存在new和delete两个基本流程。
 
@@ -39,42 +39,47 @@ delete pf;
 STL内存控制流程参考了C++的内存操作基本流程，将内存空间分配释放与内容的构造和析构分开在不同的函数中实现。
 
 ### 分配内存函数
-'''C
+
+```C++
 alloc::allocate() 
-'''
+```
 
 ### 释放内存函数
-'''C
+
+```C++
 alloc::deallocate() 
-'''
+```
 
 ### 对象构造函数
-'''C
+
+```C++
 alloc::construct()
-'''
+```
 
 construct()本质上是对构造函数T()的封装，源码如下：
 
-'''C
+
+```C++
 template <class T1, class T2>
 inline void construct(T1* p, const T2& value){
   new (p) T1(value); // placement new，即operator new 的重载版本，只调用对象的构造函数，并不进行内存的分配.
 }
-'''
+```
 
 ### 对象析构函数
-'''C
+
+```C++
 alloc::destroy()
-'''
+```
 
 destroy()本质上是对析构函数~T()的封装，源码如下：
 
-'''C
+```C++
 template <class T>
 inline void destroy(T* pointer){
     pointer->~T(); // 调用析构函数
 }
-'''
+```
 
 ## vector的内存管理机制
 
@@ -92,7 +97,7 @@ C++中的vector模板可以看成是一个动态数组。
 
 测试代码：
 
-'''C
+```C++
 #include 
 #include 
 using namespace std;
@@ -130,13 +135,13 @@ int main()
     }
     return 0;
 }
-'''
+```
 
 ## 注意事项
 
 如果容器中保存了对象指针，则要在清除容器前手动删除指针，否则就会内存泄露。
 
-'''C
+```C++
 class Unit {
 
 public:
@@ -172,7 +177,7 @@ for (Unit* ptr:units) {
 	delete ptr;
 	ptr = nullptr;
 }
-'''
+```
 
 ## 个人经验谈
 因为STL对内存管理做了很好的封装，所以对于搞不定的复杂内存问题可以借用STL来解决。
